@@ -10,12 +10,23 @@ body {
   margin: 40px auto;
   background: #f7f9ff;
   padding: 20px;
-  line-height: 1.5;
+  line-height: 1.6;
 }
-#timer { font-size: 1.4rem; font-weight: bold; margin-top: 10px; }
+#timer { font-size: 1.4rem; font-weight: bold; margin-top: 20px; }
 .hidden { display: none; }
+button {
+  padding: 12px 22px;
+  font-size: 1rem;
+  background: #2b63d9;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+button:hover { background: #1f4eb0; }
 </style>
 </head>
+
 <body>
 
 <h1>TAS-U /s/ – Test di Attenzione Uditiva</h1>
@@ -23,18 +34,19 @@ body {
 <p>
 Ascolterai una sequenza di parole. Il tuo compito è
 <strong>contare tutte le parole che iniziano con S-</strong>.
-Non puoi mettere in pausa, tornare indietro o riascoltare.
+Non puoi mettere in pausa, tornare indietro o riascoltare il file.
 </p>
 
-<p>Il test partirà automaticamente.</p>
+<p>Quando sei pronto, clicca il pulsante qui sotto per avviare il test.</p>
+
+<button id="start-btn">Inizia il test</button>
 
 <div id="timer">Tempo: --:--</div>
 
 <audio id="audio" src="S.mp3"></audio>
 
-
 <div id="end-message" class="hidden">
-  <h2>🏁 Il test è terminato.</h2>
+  <h2>🏁 Il test è terminato</h2>
   <p>Torna al Google Moduli e inserisci il numero totale di parole con S- che hai individuato.</p>
 </div>
 
@@ -42,19 +54,23 @@ Non puoi mettere in pausa, tornare indietro o riascoltare.
 const audio = document.getElementById("audio");
 const timer = document.getElementById("timer");
 const endMessage = document.getElementById("end-message");
+const startBtn = document.getElementById("start-btn");
 
-// Impedisce controlli audio
+// niente controlli
 audio.controls = false;
 audio.setAttribute("controlsList", "nodownload noplaybackrate");
 audio.preload = "auto";
 
-// Avvio automatico
-audio.play();
+// avvio dopo clic
+startBtn.addEventListener("click", () => {
+  startBtn.style.display = "none";
+  audio.play();
+});
 
-// Timer
+// timer parte quando l'audio conosce la durata
 audio.onloadedmetadata = () => {
   let dur = Math.floor(audio.duration);
-  
+
   const countdown = setInterval(() => {
     let min = Math.floor(dur / 60);
     let sec = dur % 60;
@@ -68,7 +84,6 @@ audio.onloadedmetadata = () => {
   }, 1000);
 };
 
-// Fine test
 audio.onended = () => {
   endMessage.classList.remove("hidden");
 };
